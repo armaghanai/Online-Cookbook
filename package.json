@@ -1,4 +1,14 @@
 {
+  "name": "online-cookbook",
+  "version": "1.0.0",
+  "description": "Interactive cookbook web app with page-flip UI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1"
