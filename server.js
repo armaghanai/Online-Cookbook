@@ -49,4 +49,4 @@ app.delete('/api/recipes/:id', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Kitchen open at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Kitchen open at http://localhost:${PORT}`));
