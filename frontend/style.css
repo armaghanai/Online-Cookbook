@@ -1,0 +1,779 @@
+/* =========================================================
+   COOKBOOK — STYLE SHEET
+   Light / Dark theme via [data-theme] on <html>
+   ========================================================= */
+
+/* ---- Google Fonts are loaded via HTML <link> ---- */
+
+/* =========================================================
+   1. DESIGN TOKENS
+   ========================================================= */
+:root {
+    /* Shared */
+    --accent:        #c8860a;
+    --accent-light:  #e5a82e;
+    --accent-dim:    rgba(200, 134, 10, 0.18);
+    --radius-sm:     8px;
+    --radius-md:     14px;
+    --radius-lg:     24px;
+    --shadow-soft:   0 8px 32px rgba(0,0,0,0.18);
+    --shadow-deep:   0 24px 64px rgba(0,0,0,0.35);
+    --transition:    0.28s cubic-bezier(.4,0,.2,1);
+    --font-serif:    'Playfair Display', Georgia, serif;
+    --font-sans:     'Inter', system-ui, sans-serif;
+}
+
+/* ---- DARK THEME (default) ---- */
+[data-theme="dark"] {
+    --bg:            #14100a;
+    --bg2:           #1e1810;
+    --surface:       #251e14;
+    --surface2:      #2f2618;
+    --border:        rgba(255,255,255,0.08);
+    --text:          #f5ede0;
+    --text-dim:      #9e8c72;
+    --text-muted:    #5c4f3a;
+    --page-bg:       #f5ede0;
+    --page-text:     #1a1208;
+    --page-dim:      #5c4f3a;
+    --page-line:     rgba(0,0,0,0.06);
+    --page-shadow:   rgba(0,0,0,0.55);
+    --spine-bg:      linear-gradient(180deg, #7a3f0a 0%, #5c2e06 100%);
+    --spine-text:    #f5d6a0;
+    --nav-bg:        rgba(20, 16, 10, 0.82);
+    --input-bg:      rgba(255,255,255,0.05);
+    --modal-bg:      rgba(30, 24, 16, 0.96);
+    --btn-cancel-bg: rgba(255,255,255,0.07);
+    --btn-cancel:    #9e8c72;
+    --tag-bg:        rgba(200,134,10,0.18);
+    --tag-text:      #e5a82e;
+    --arrow-bg:      rgba(255,255,255,0.06);
+    --arrow-hover:   rgba(200,134,10,0.25);
+    --indicator:     rgba(255,255,255,0.18);
+}
+
+/* ---- LIGHT THEME ---- */
+[data-theme="light"] {
+    --bg:            #faf6ef;
+    --bg2:           #f0e9db;
+    --surface:       #ffffff;
+    --surface2:      #f5ede0;
+    --border:        rgba(0,0,0,0.09);
+    --text:          #1a1208;
+    --text-dim:      #5c4f3a;
+    --text-muted:    #9e8c72;
+    --page-bg:       #fffdf8;
+    --page-text:     #1a1208;
+    --page-dim:      #6b5c45;
+    --page-line:     rgba(0,0,0,0.055);
+    --page-shadow:   rgba(0,0,0,0.22);
+    --spine-bg:      linear-gradient(180deg, #9a5012 0%, #7a3a08 100%);
+    --spine-text:    #fdeac0;
+    --nav-bg:        rgba(250, 246, 239, 0.88);
+    --input-bg:      rgba(0,0,0,0.04);
+    --modal-bg:      rgba(255, 253, 248, 0.98);
+    --btn-cancel-bg: rgba(0,0,0,0.05);
+    --btn-cancel:    #5c4f3a;
+    --tag-bg:        rgba(200,134,10,0.12);
+    --tag-text:      #8a5c00;
+    --arrow-bg:      rgba(0,0,0,0.05);
+    --arrow-hover:   rgba(200,134,10,0.18);
+    --indicator:     rgba(0,0,0,0.25);
+}
+
+/* =========================================================
+   2. RESET & BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    transition: background-color 0.4s, color 0.4s;
+    /* Warm textured background */
+    background-image: radial-gradient(ellipse at 20% 10%, var(--bg2) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 90%, var(--bg2) 0%, transparent 60%);
+}
+
+/* =========================================================
+   3. NAVBAR
+   ========================================================= */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 64px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.logo-icon { font-size: 1.5rem; }
+
+.logo-text {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+}
+
+/* Search */
+.nav-search {
+    flex: 1;
+    max-width: 420px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 0.9rem;
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+#searchInput {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 9px 36px 9px 36px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+}
+
+#searchInput:focus {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+#searchInput::placeholder { color: var(--text-muted); }
+
+.clear-search {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    display: none;
+    transition: color var(--transition);
+}
+.clear-search:hover { color: var(--accent); }
+.clear-search.visible { display: block; }
+
+/* Right actions */
+.nav-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 9px 18px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 2px 12px rgba(200,134,10,0.35);
+}
+.btn-add:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 18px rgba(200,134,10,0.45);
+}
+.btn-add span { font-size: 1.1rem; font-weight: 400; }
+
+.theme-toggle {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), transform var(--transition), border-color var(--transition);
+}
+.theme-toggle:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    transform: rotate(20deg);
+}
+
+/* =========================================================
+   4. STAGE
+   ========================================================= */
+.stage {
+    min-height: 100vh;
+    padding-top: 96px;
+    padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+}
+
+/* =========================================================
+   5. BOOK SCENE
+   ========================================================= */
+.book-scene {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    perspective: 1400px;
+}
+
+/* ---- Navigation Arrows ---- */
+.nav-arrow {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--arrow-bg);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), border-color var(--transition), transform var(--transition), color var(--transition);
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+}
+.nav-arrow svg { width: 22px; height: 22px; }
+.nav-arrow:hover:not(:disabled) {
+    background: var(--arrow-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: scale(1.08);
+}
+.nav-arrow:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
+
+/* ---- The Book ---- */
+.book {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    transform-style: preserve-3d;
+
+    /* Slight overall tilt for realism */
+    transform: rotateX(3deg);
+    filter: drop-shadow(0 32px 48px var(--page-shadow));
+    transition: filter 0.4s;
+}
+
+/* Shared page styles */
+.page {
+    width: 340px;
+    min-height: 480px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.72s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+}
+
+.page-left  { transform-origin: right center; border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.page-right { transform-origin: left  center; border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+/* Page faces */
+.page-inner {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: inherit;
+    overflow: hidden;
+    background: var(--page-bg);
+
+    /* Lined paper effect via repeating-linear-gradient */
+    background-image:
+        linear-gradient(var(--page-line) 1px, transparent 1px);
+    background-size: 100% 32px;
+    background-position: 0 24px;
+}
+
+.page-back {
+    transform: rotateY(180deg);
+}
+
+/* Content inside pages */
+.page-content {
+    padding: 36px 32px 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+/* Inner shadow on page edges for depth */
+.page-left .page-front::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.06) 0%, transparent 18%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+.page-right .page-front::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.06) 0%, transparent 18%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* ---- Flip Animations ---- */
+/* Flip-forward: right page flips left */
+.page-right.flip-forward { transform: rotateY(-180deg); }
+/* Flip-backward: left  page flips right */
+.page-left.flip-backward { transform: rotateY(180deg);  }
+
+/* ---- Spine ---- */
+.book-spine {
+    width: 28px;
+    background: var(--spine-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    box-shadow: inset -3px 0 8px rgba(0,0,0,0.25), inset 3px 0 8px rgba(0,0,0,0.25);
+}
+
+.spine-title {
+    font-family: var(--font-serif);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--spine-text);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    opacity: 0.85;
+}
+
+/* =========================================================
+   6. RECIPE PAGE CONTENT
+   ========================================================= */
+.recipe-page-number {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    color: var(--page-dim);
+    margin-bottom: 18px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recipe-emoji {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    line-height: 1;
+    display: block;
+}
+
+.recipe-title-page {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--page-text);
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.recipe-category {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: 50px;
+    padding: 3px 10px;
+    margin-bottom: 16px;
+}
+
+.recipe-meta {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.meta-chip {
+    font-size: 0.78rem;
+    color: var(--page-dim);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.recipe-divider {
+    border: none;
+    border-top: 1px solid var(--page-line);
+    margin: 10px 0 16px;
+}
+
+.section-label {
+    font-family: var(--font-serif);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.recipe-ingredients {
+    font-size: 0.82rem;
+    color: var(--page-text);
+    line-height: 1.65;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--page-line) transparent;
+}
+
+.recipe-ingredients li {
+    list-style-type: none;
+    padding: 2px 0;
+    padding-left: 14px;
+    position: relative;
+}
+
+.recipe-ingredients li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 1.1rem;
+    line-height: 1.3;
+}
+
+.recipe-instructions {
+    font-size: 0.81rem;
+    color: var(--page-text);
+    line-height: 1.7;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--page-line) transparent;
+}
+
+.recipe-instructions p {
+    margin-bottom: 7px;
+}
+
+/* Delete button on page */
+.page-delete-btn {
+    margin-top: 16px;
+    align-self: flex-end;
+    background: none;
+    border: 1px solid rgba(220,60,60,0.2);
+    color: rgba(200,60,60,0.55);
+    font-size: 0.75rem;
+    border-radius: 50px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.page-delete-btn:hover {
+    background: rgba(220,60,60,0.1);
+    color: #e03030;
+    border-color: rgba(220,60,60,0.5);
+}
+
+/* Empty-page placeholder */
+.page-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+    opacity: 0.3;
+}
+.page-empty .empty-page-icon { font-size: 2.5rem; }
+.page-empty p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--page-dim);
+}
+
+/* =========================================================
+   7. PAGE INDICATOR
+   ========================================================= */
+.page-indicator {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--indicator);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.04em;
+    user-select: none;
+}
+.page-indicator #pageNum { font-weight: 600; color: var(--accent); }
+.indicator-sep, .indicator-label { opacity: 0.7; }
+
+/* =========================================================
+   8. EMPTY STATE
+   ========================================================= */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+.empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+.empty-state p { color: var(--text-dim); font-size: 0.9rem; }
+
+/* =========================================================
+   9. MODAL
+   ========================================================= */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 20px;
+}
+.modal-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal {
+    background: var(--modal-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-deep);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    scrollbar-width: thin;
+}
+.modal-backdrop.open .modal {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 26px 28px 18px;
+    border-bottom: 1px solid var(--border);
+}
+.modal-header h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text);
+}
+
+.modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition), color var(--transition);
+}
+.modal-close:hover { background: rgba(220,60,60,0.12); color: #e03030; }
+
+/* Form */
+.modal-form {
+    padding: 22px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+.form-group-sm { flex: 0 0 100px; }
+
+.form-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+    resize: vertical;
+    width: 100%;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--text-muted); }
+
+.form-group select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn-cancel {
+    background: var(--btn-cancel-bg);
+    border: 1px solid var(--border);
+    color: var(--btn-cancel);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+.btn-cancel:hover { background: var(--input-bg); }
+
+.btn-save {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 26px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(200,134,10,0.35);
+    transition: background var(--transition), transform var(--transition);
+}
+.btn-save:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   10. UTILITY / ANIMATION
+   ========================================================= */
+/* Pulse on load for arrows */
+@keyframes pulse-arrow {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.12); }
+}
+
+/* Subtle page-load fade-in */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.book-scene { animation: fadeUp 0.6s ease both; }
+
+/* =========================================================
+   11. RESPONSIVE
+   ========================================================= */
+@media (max-width: 800px) {
+    .page { width: 270px; min-height: 400px; }
+    .book-spine { width: 20px; }
+    .nav-search { max-width: 220px; }
+    .btn-add span { display: none; }
+}
+
+@media (max-width: 620px) {
+    .page { width: 220px; min-height: 360px; }
+    .page-content { padding: 22px 18px 18px; }
+    .recipe-title-page { font-size: 1.15rem; }
+    .nav-search { display: none; }
+    .book-scene { gap: 14px; }
+    .nav-arrow { width: 40px; height: 40px; }
+}

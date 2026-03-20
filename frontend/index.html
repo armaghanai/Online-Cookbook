@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookbook — Recipe Collection</title>
+    <meta name="description"
+        content="An interactive cookbook to browse, add and manage your favourite recipes with a beautiful page-flip experience.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-icon">📖</span>
+            <span class="logo-text">Cookbook</span>
+        </div>
+
+        <div class="nav-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search recipes…" autocomplete="off">
+            <button class="clear-search" id="clearSearch" title="Clear search">✕</button>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn-add" id="openModal" title="Add new recipe">
+                <span>+</span> New Recipe
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ====== MAIN STAGE ====== -->
+    <main class="stage">
+
+        <!-- Book scene -->
+        <div class="book-scene" id="bookScene">
+
+            <!-- Previous page button -->
+            <button class="nav-arrow arrow-left" id="prevBtn" title="Previous recipes" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <!-- The Book -->
+            <div class="book" id="book">
+                <!-- Left page (even index recipe) -->
+                <div class="page page-left" id="pageLeft">
+                    <div class="page-inner page-front">
+                        <div class="page-content" id="leftContent"></div>
+                    </div>
+                    <div class="page-inner page-back">
+                        <div class="page-content" id="leftBackContent"></div>
+                    </div>
+                </div>
+
+                <!-- Book spine -->
+                <div class="book-spine">
+                    <span class="spine-title">My Recipes</span>
+                </div>
+
+                <!-- Right page (odd index recipe) -->
+                <div class="page page-right" id="pageRight">
+                    <div class="page-inner page-front">
+                        <div class="page-content" id="rightContent"></div>
+                    </div>
+                    <div class="page-inner page-back">
+                        <div class="page-content" id="rightBackContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next page button -->
+            <button class="nav-arrow arrow-right" id="nextBtn" title="Next recipes">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Page indicator -->
+        <div class="page-indicator" id="pageIndicator">
+            <span id="pageNum">1</span>
+            <span class="indicator-sep">of</span>
+            <span id="pageTotal">1</span>
+            <span class="indicator-label"> spreads</span>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState" style="display:none">
+            <div class="empty-icon">📭</div>
+            <h2>No recipes found</h2>
+            <p>Try a different search, or add a new recipe!</p>
+        </div>
+
+    </main>
+
+    <!-- ====== ADD RECIPE MODAL ====== -->
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h2 id="modalTitle">✨ New Recipe</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close">✕</button>
+            </div>
+
+            <form class="modal-form" id="recipeForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fTitle">Recipe Title *</label>
+                        <input type="text" id="fTitle" placeholder="e.g. Pasta Primavera" required>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="fEmoji">Emoji</label>
+                        <input type="text" id="fEmoji" placeholder="🍝" maxlength="4">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fCategory">Category</label>
+                        <select id="fCategory">
+                            <option value="">— Select —</option>
+                            <option>Breakfast</option>
+                            <option>Appetizer</option>
+                            <option>Salad</option>
+                            <option>Pasta</option>
+                            <option>Main</option>
+                            <option>Side</option>
+                            <option>Soup</option>
+                            <option>Dessert</option>
+                            <option>Drink</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="fCookTime">Cook Time</label>
+                        <input type="text" id="fCookTime" placeholder="30 min">
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label for="fServings">Servings</label>
+                        <input type="number" id="fServings" placeholder="4" min="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fIngredients">Ingredients *</label>
+                    <textarea id="fIngredients" rows="3" placeholder="List your ingredients separated by commas…"
+                        required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="fInstructions">Instructions</label>
+                    <textarea id="fInstructions" rows="5" placeholder="Step-by-step instructions…"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
+                    <button type="submit" class="btn-save">Save Recipe 🍴</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
