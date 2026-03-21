@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -31,5 +32,33 @@ app.post('/api/recipes', async (req, res) => {
     } catch (err) { res.status(500).send("Cloud Save Error"); }
 });
 
+// DELETE a recipe from JSONBin
+app.delete('/api/recipes/:id', async (req, res) => {
+    try {
+        // 1. Get the current list from the cloud
+        const getRes = await axios.get(`${URL}/latest`, {
+            headers: { 'X-Master-Key': API_KEY }
+        });
+        let data = getRes.data.record;
+
+        // 2. Filter out the recipe with the ID sent from the frontend
+        // Note: req.params.id is a string, r.id might be a number
+        const updatedData = data.filter(recipe => recipe.id != req.params.id);
+
+        // 3. Push the new, smaller list back to JSONBin
+        await axios.put(URL, updatedData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': API_KEY
+            }
+        });
+
+        res.json({ message: "Recipe deleted from cloud!" });
+    } catch (err) {
+        console.error("Delete Error:", err.message);
+        res.status(500).send("Cloud Delete Error");
+    }
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Live on ${PORT}`));
+app.listen(PORT, () => console.log(`Live on http://localhost:${PORT}`));
