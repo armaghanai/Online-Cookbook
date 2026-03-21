@@ -4,33 +4,33 @@
    ========================================================== */
 
 // ── State ──────────────────────────────────────────────────
-let allRecipes   = [];   // full list from server
-let recipes      = [];   // filtered list (what the book shows)
-let spreadIndex  = 0;    // current spread (0 = recipes 0+1, 1 = recipes 2+3, …)
-let isFlipping   = false;
+let allRecipes = [];   // full list from server
+let recipes = [];   // filtered list (what the book shows)
+let spreadIndex = 0;    // current spread (0 = recipes 0+1, 1 = recipes 2+3, …)
+let isFlipping = false;
 
 // ── DOM refs ───────────────────────────────────────────────
-const pageLeft        = document.getElementById('pageLeft');
-const pageRight       = document.getElementById('pageRight');
-const leftContent     = document.getElementById('leftContent');
-const rightContent    = document.getElementById('rightContent');
+const pageLeft = document.getElementById('pageLeft');
+const pageRight = document.getElementById('pageRight');
+const leftContent = document.getElementById('leftContent');
+const rightContent = document.getElementById('rightContent');
 const leftBackContent = document.getElementById('leftBackContent');
-const rightBackContent= document.getElementById('rightBackContent');
-const prevBtn         = document.getElementById('prevBtn');
-const nextBtn         = document.getElementById('nextBtn');
-const pageNum         = document.getElementById('pageNum');
-const pageTotal       = document.getElementById('pageTotal');
-const emptyState      = document.getElementById('emptyState');
-const bookScene       = document.getElementById('bookScene');
+const rightBackContent = document.getElementById('rightBackContent');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pageNum = document.getElementById('pageNum');
+const pageTotal = document.getElementById('pageTotal');
+const emptyState = document.getElementById('emptyState');
+const bookScene = document.getElementById('bookScene');
 
-const themeToggle  = document.getElementById('themeToggle');
-const searchInput  = document.getElementById('searchInput');
-const clearSearch  = document.getElementById('clearSearch');
+const themeToggle = document.getElementById('themeToggle');
+const searchInput = document.getElementById('searchInput');
+const clearSearch = document.getElementById('clearSearch');
 const openModalBtn = document.getElementById('openModal');
-const closeModalBtn= document.getElementById('closeModal');
-const cancelModal  = document.getElementById('cancelModal');
-const modalBackdrop= document.getElementById('modalBackdrop');
-const recipeForm   = document.getElementById('recipeForm');
+const closeModalBtn = document.getElementById('closeModal');
+const cancelModal = document.getElementById('cancelModal');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const recipeForm = document.getElementById('recipeForm');
 
 // ── Theme ──────────────────────────────────────────────────
 function initTheme() {
@@ -40,13 +40,13 @@ function initTheme() {
 }
 
 function updateThemeIcon(theme) {
-    document.querySelector('.theme-icon').textContent = theme === 'dark' ? '🌙' : '☀️';
+    document.querySelector('.theme-icon').textContent = theme === 'dark' ? '☀️' : '🌙';
 }
 
 function toggleTheme() {
-    const html    = document.documentElement;
+    const html = document.documentElement;
     const current = html.getAttribute('data-theme');
-    const next    = current === 'dark' ? 'light' : 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('cookbook-theme', next);
     updateThemeIcon(next);
@@ -68,9 +68,9 @@ async function fetchRecipes() {
 
 async function postRecipe(data) {
     const res = await fetch('/api/recipes', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(data)
+        body: JSON.stringify(data)
     });
     return res.json();
 }
@@ -142,17 +142,17 @@ function renderSpread(index) {
     const recipe = recipes[index] ?? null;
     const spreadNum = index + 1;
 
-    leftContent.innerHTML  = buildLeftPageHTML(recipe,  spreadNum);
+    leftContent.innerHTML = buildLeftPageHTML(recipe, spreadNum);
     rightContent.innerHTML = buildRightPageHTML(recipe, spreadNum);
 
     // Pre-load back faces with the NEXT recipe for the flip illusion
     const nextRecipe = recipes[index + 1] ?? null;
     const nextSpreadNum = index + 2;
-    leftBackContent.innerHTML  = buildLeftPageHTML(nextRecipe,  nextSpreadNum);
+    leftBackContent.innerHTML = buildLeftPageHTML(nextRecipe, nextSpreadNum);
     rightBackContent.innerHTML = buildRightPageHTML(nextRecipe, nextSpreadNum);
 
     // Update indicators
-    pageNum.textContent   = index + 1;
+    pageNum.textContent = index + 1;
     pageTotal.textContent = totalSpreads();
 
     prevBtn.disabled = index === 0;
@@ -196,7 +196,7 @@ prevBtn.addEventListener('click', flipPrev);
 document.addEventListener('keydown', (e) => {
     if (modalBackdrop.classList.contains('open')) return;
     if (e.key === 'ArrowRight') flipNext();
-    if (e.key === 'ArrowLeft')  flipPrev();
+    if (e.key === 'ArrowLeft') flipPrev();
 });
 
 // ── Search ─────────────────────────────────────────────────
@@ -260,11 +260,11 @@ recipeForm.addEventListener('submit', async (e) => {
 
     const recipe = {
         title,
-        emoji:        document.getElementById('fEmoji').value.trim() || '🍽️',
-        category:     document.getElementById('fCategory').value,
-        cookTime:     document.getElementById('fCookTime').value.trim(),
-        servings:     document.getElementById('fServings').value || null,
-        ingredients:  ingred,
+        emoji: document.getElementById('fEmoji').value.trim() || '🍽️',
+        category: document.getElementById('fCategory').value,
+        cookTime: document.getElementById('fCookTime').value.trim(),
+        servings: document.getElementById('fServings').value || null,
+        ingredients: ingred,
         instructions: document.getElementById('fInstructions').value.trim()
     };
 
@@ -297,7 +297,7 @@ async function handleDelete(id) {
 // ── Load & boot ────────────────────────────────────────────
 async function loadRecipes() {
     allRecipes = await fetchRecipes();
-    recipes    = [...allRecipes];
+    recipes = [...allRecipes];
 }
 
 async function init() {
