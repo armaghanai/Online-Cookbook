@@ -26,12 +26,7 @@ app.get('/api/recipes', async (req, res) => {
 
 // POST Recipe to Cloud
 app.post('/api/recipes', async (req, res) => {
-    const clientPassword = req.headers['admin-auth'];
 
-    // 2. Check if it matches your secret (e.g., 'Chef2026')
-    if (clientPassword !== ADMIN_PASSWORD) {
-        return res.status(403).json({ error: "Unauthorized: Only the chef can add recipes!" });
-    }
     try {
         const getRes = await axios.get(`${URL}/latest`, { headers: { 'X-Master-Key': API_KEY } });
         let data = getRes.data.record;
@@ -43,12 +38,6 @@ app.post('/api/recipes', async (req, res) => {
 
 // DELETE a recipe from JSONBin
 app.delete('/api/recipes/:id', async (req, res) => {
-    const clientPassword = req.headers['admin-auth'];
-
-    // 2. Check if it matches your secret (e.g., 'Chef2026')
-    if (clientPassword !== ADMIN_PASSWORD) {
-        return res.status(403).json({ error: "Unauthorized: Only the chef can delete recipes!" });
-    }
     try {
         // 1. Get the current list from the cloud
         const getRes = await axios.get(`${URL}/latest`, {
