@@ -1,19 +1,17 @@
 # 📖 Cookbook — Interactive Recipe Collection
 
-A full-stack cookbook web app with an animated **page-flip book UI**, light/dark theme, and a live JSON database. Browse, add, and delete recipes like flipping through a real cookbook.
+A full-stack cookbook web app featuring an animated 3D page-flip UI, secure Chef Mode authentication, and a live JSON database. Browse, add, and manage recipes with the feel of a real physical book.
 
 ---
 
 ## ✨ Features
 
-- **Page-flip book** — 3D CSS `rotateY` animation; left page shows Ingredients, right page shows Instructions
-- **56 recipes** pre-loaded across 10 categories (Breakfast, Pasta, Main, Soup, Dessert, and more)
-- **Light / Dark theme** — toggles with a click, persists across sessions via `localStorage`
-- **Add recipes** — modal form with title, emoji, category, cook time, servings, ingredients, and instructions
-- **Delete recipes** — remove any recipe directly from its page
-- **Live search** — filters the book in real time across title, ingredients, category, and instructions
-- **Keyboard navigation** — use `←` / `→` arrow keys to flip pages
-- **Responsive** — adapts gracefully down to mobile screen sizes
+- **3D Page-Flip Engine** — Realistic CSS rotateY animations; left pages show Ingredients, right pages show Instructions.
+- **Chef Mode (Admin Auth)** — Secure access control. The "Add" and "Delete" buttons are disabled by default and only unlock once the correct Admin Password is verified by the server.
+- **Live Search & Filtering** — Real-time filtering across titles, ingredients, and categories with empty-state handling.
+- **Cloud-Synced Database** — Integrated with JSONBin.io (via axios on the backend) for persistent, live data storage across Vercel deployments.
+- **Dual-Theme System** — High-contrast Light and Dark modes using CSS Custom Properties and localStorage persistence.
+- **Keyboard Navigation** — Use ← / → arrow keys to flip through the collection.
 
 ---
 
@@ -21,9 +19,8 @@ A full-stack cookbook web app with an animated **page-flip book UI**, light/dark
 
 ```
 FastApp/
-├── server.js          # Express server (API + static file serving)
-├── db.json            # JSON flat-file database (all recipes)
-├── package.json
+├── server.js          # Express API (Auth logic + JSONBin Cloud Proxy)
+├── package.json       # Project dependencies & scripts
 └── frontend/
     ├── index.html     # App shell — book scene, navbar, modal
     ├── style.css      # Full theme system + 3D flip animations
@@ -53,39 +50,26 @@ Then open **[http://localhost:5000](http://localhost:5000)** in your browser.
 
 ## 🔌 API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/recipes` | Return all recipes |
-| `POST` | `/api/recipes` | Add a new recipe |
-| `DELETE` | `/api/recipes/:id` | Delete a recipe by ID |
+| Method | Endpoint |Auth Required| Description |
+|--------|----------|-------------|-------------|
+| `GET` | `/api/recipes` | No | Return all recipes |
+| `POST` | `/api/login` | No | Verify Chef password |
+| `POST` | `/api/recipes` | Yes | Add a new recipe |
+| `DELETE` | `/api/recipes/:id` | Yes | Delete a recipe by ID |
 
-### Recipe Schema
-
-```json
-{
-  "id": 1,
-  "title": "Classic Spaghetti Carbonara",
-  "emoji": "🍝",
-  "category": "Pasta",
-  "cookTime": "25 min",
-  "servings": 2,
-  "ingredients": "200g spaghetti, 100g pancetta, ...",
-  "instructions": "1. Cook spaghetti...\n2. Fry pancetta..."
-}
-```
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Server | Node.js + Express |
-| Database | JSON flat file (`db.json`) |
-| Frontend | Vanilla HTML, CSS, JavaScript |
-| Fonts | Playfair Display + Inter (Google Fonts) |
-| Theme | CSS custom properties (`[data-theme]`) |
-| Animation | CSS 3D transforms (`perspective`, `rotateY`) |
+|Layer|Technology|
+|--------|----------|
+|Server|Node.js + Express|
+|Security|Stateless Header-based Auth (admin-auth)|
+|Database|JSONBin.io Cloud Storage|
+|Frontend|"Vanilla JS (ES6+), CSS Grid/Flexbox"|
+|Animation|"CSS 3D Transforms (perspective, rotateY)"|
+|Deployment|Vercel (CI/CD)|
 
 ---
 
