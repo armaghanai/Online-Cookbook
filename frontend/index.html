@@ -26,12 +26,16 @@
 
         <div class="nav-search">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search recipes…" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Search recipes by ingredients or by serial number…"
+                autocomplete="off">
             <button class="clear-search" id="clearSearch" title="Clear search">✕</button>
         </div>
 
         <div class="nav-actions">
-            <button class="btn-add" id="openModal" title="Add new recipe">
+            <button class="btn-chef" id="chefLoginBtn" title="Chef Login">
+                <span>👨‍🍳</span> Chef Mode
+            </button>
+            <button class="btn-add" id="openModal" title="Add new recipe" disabled>
                 <span>+</span> New Recipe
             </button>
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle theme">
@@ -169,6 +173,24 @@
                     <button type="submit" class="btn-save">Save Recipe 🍴</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="chefModalBackdrop">
+        <div class="modal modal-sm" role="dialog">
+            <div class="modal-header">
+                <h2>👨‍🍳 Chef Authentication</h2>
+                <button class="modal-close" id="closeChefModal">✕</button>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label for="chefPassword">Password</label>
+                    <input type="password" id="chefPassword" placeholder="••••••••">
+                </div>
+                <div class="form-actions">
+                    <button class="btn-save" id="verifyChefBtn">Unlock Kitchen 🔑</button>
+                </div>
+            </div>
         </div>
     </div>
 

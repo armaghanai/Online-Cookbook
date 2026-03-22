@@ -8,6 +8,7 @@ let allRecipes = [];   // full list from server
 let recipes = [];   // filtered list (what the book shows)
 let spreadIndex = 0;    // current spread (0 = recipes 0+1, 1 = recipes 2+3, …)
 let isFlipping = false;
+let adminToken = null;
 
 // ── DOM refs ───────────────────────────────────────────────
 const pageLeft = document.getElementById('pageLeft');
@@ -32,6 +33,59 @@ const cancelModal = document.getElementById('cancelModal');
 const modalBackdrop = document.getElementById('modalBackdrop');
 const recipeForm = document.getElementById('recipeForm');
 
+const chefLoginBtn = document.getElementById('chefLoginBtn');
+const chefModal = document.getElementById('chefModalBackdrop');
+const closeChefModal = document.getElementById('closeChefModal');
+const verifyChefBtn = document.getElementById('verifyChefBtn');
+const chefPasswordInput = document.getElementById('chefPassword');
+
+function openChefModal() {
+    chefModal.classList.add('open');
+    chefPasswordInput.focus();
+}
+
+function closeChefModalFunc() {
+    chefModal.classList.remove('open');
+    chefPasswordInput.value = '';
+}
+chefLoginBtn.addEventListener('click', openChefModal);
+closeChefModal.addEventListener('click', closeChefModalFunc);
+
+function toggleAdminButtons(enable) {
+    // 1. Toggle the "Add Recipe" button in navbar
+    openModalBtn.disabled = !enable;
+
+    // 2. Toggle all "Remove" buttons currently visible in the book
+    const deleteButtons = document.querySelectorAll('.page-delete-btn');
+    deleteButtons.forEach(btn => {
+        btn.disabled = !enable;
+    });
+}
+
+verifyChefBtn.addEventListener('click', async () => {
+    const pwd = chefPasswordInput.value;
+
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+    });
+
+    if (res.ok) {
+        adminToken = pwd;
+        chefLoginBtn.innerHTML = "<span>🍳</span> Chef Active";
+        chefLoginBtn.classList.add('active-chef');
+        chefLoginBtn.disabled = true;
+
+        // UNLOCK THE BUTTONS
+        toggleAdminButtons(true);
+
+        closeChefModalFunc();
+        alert("Welcome back, Chef! Controls enabled.\nRefresh if you want to logout");
+    } else {
+        alert("❌ Incorrect Password.");
+    }
+});
 // ── Theme ──────────────────────────────────────────────────
 function initTheme() {
     const saved = localStorage.getItem('cookbook-theme') || 'dark';
@@ -55,6 +109,7 @@ function toggleTheme() {
 themeToggle.addEventListener('click', toggleTheme);
 
 // ── API helpers ────────────────────────────────────────────
+// ── API helpers ────────────────────────────────────────────
 async function fetchRecipes() {
     try {
         const res = await fetch('/api/recipes');
@@ -67,16 +122,44 @@ async function fetchRecipes() {
 }
 
 async function postRecipe(data) {
+    if (!adminToken) {
+        alert("⛔ Access Denied: Only the Chef can add recipes. Please login first.");
+        return null;
+    }
+
     const res = await fetch('/api/recipes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'admin-auth': adminToken
+        },
         body: JSON.stringify(data)
     });
+
+    if (res.status === 403) {
+        alert("⛔ Unauthorized: Wrong password. Please login again.");
+        adminToken = null; // Reset token on failure
+        return null;
+    }
     return res.json();
 }
 
 async function deleteRecipeById(id) {
-    const res = await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
+    if (!adminToken) {
+        alert("⛔ Access Denied: Please enter Chef Mode to delete.");
+        return null;
+    }
+
+    const res = await fetch(`/api/recipes/${id}`, {
+        method: 'DELETE',
+        headers: { 'admin-auth': adminToken }
+    });
+
+    if (res.status === 403) {
+        alert("⛔ Unauthorized: Wrong password.");
+        adminToken = null;
+        return null;
+    }
     return res.json();
 }
 
@@ -116,7 +199,7 @@ function buildLeftPageHTML(recipe, spreadNum) {
         ${buildRecipeHeader(recipe, `Recipe ${spreadNum}`)}
         <div class="section-label">Ingredients</div>
         <ul class="recipe-ingredients">${ingredientsList}</ul>
-        <button class="page-delete-btn" onclick="handleDelete(${recipe.id})">🗑 Remove recipe</button>`;
+        <button class="page-delete-btn" onclick="handleDelete(${recipe.id})" disabled>🗑 Remove recipe</button>`;
 }
 
 // RIGHT page: ONLY the instructions — no redundant header
@@ -157,6 +240,10 @@ function renderSpread(index) {
 
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index >= totalSpreads() - 1;
+
+    if (adminToken) {
+        toggleAdminButtons(true);
+    }
 }
 
 // ── Flip forward ───────────────────────────────────────────
@@ -200,11 +287,20 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ── Search ─────────────────────────────────────────────────
+// ── Search Logic (Now with Search by Number) ───────────────
+// ── Search Logic (Fixed) ───────────────────────────────
 function applySearch(term) {
     const q = term.trim().toLowerCase();
+    const searchNum = parseInt(q);
+
     if (!q) {
         recipes = [...allRecipes];
+    } else if (!isNaN(searchNum)) {
+        // Search by Number (Recipe 1 is index 0)
+        const index = searchNum - 1;
+        recipes = (index >= 0 && index < allRecipes.length) ? [allRecipes[index]] : [];
     } else {
+        // Text Search
         recipes = allRecipes.filter(r => {
             const haystack = [r.title, r.ingredients, r.category, r.instructions]
                 .filter(Boolean).join(' ').toLowerCase();
@@ -214,6 +310,7 @@ function applySearch(term) {
 
     spreadIndex = 0;
 
+    // UI Updates
     if (recipes.length === 0) {
         bookScene.style.display = 'none';
         emptyState.style.display = 'block';
@@ -224,9 +321,17 @@ function applySearch(term) {
     }
 
     clearSearch.classList.toggle('visible', q.length > 0);
+
+    // IMPORTANT: Make sure toggleAdminButtons is called here 
+    // so the buttons stay enabled/disabled during search!
+    if (adminToken) {
+        toggleAdminButtons(true);
+    }
 }
 
+// ── MOVE THESE OUTSIDE THE FUNCTION ───────────────────────
 searchInput.addEventListener('input', (e) => applySearch(e.target.value));
+
 clearSearch.addEventListener('click', () => {
     searchInput.value = '';
     applySearch('');
