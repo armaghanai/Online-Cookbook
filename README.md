@@ -1,10 +1,10 @@
-# 📖 Cookbook — Interactive Recipe Collection
+# Cookbook — Interactive Recipe Collection
 
 A full-stack cookbook web app featuring an animated 3D page-flip UI, secure Chef Mode authentication, and a live JSON database. Browse, add, and manage recipes with the feel of a real physical book.
 
 ---
 
-## ✨ Features
+## Features
 
 - **3D Page-Flip Engine** — Realistic CSS rotateY animations; left pages show Ingredients, right pages show Instructions.
 - **Chef Mode (Admin Auth)** — Secure access control. The "Add" and "Delete" buttons are disabled by default and only unlock once the correct Admin Password is verified by the server.
@@ -15,7 +15,7 @@ A full-stack cookbook web app featuring an animated 3D page-flip UI, secure Chef
 
 ---
 
-## 🗂 Project Structure
+## Project Structure
 
 ```
 FastApp/
@@ -29,7 +29,7 @@ FastApp/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) v14 or higher
@@ -48,16 +48,6 @@ Then open **[http://localhost:5000](http://localhost:5000)** in your browser.
 
 ---
 
-## 🔌 API Endpoints
-
-| Method | Endpoint |Auth Required| Description |
-|--------|----------|-------------|-------------|
-| `GET` | `/api/recipes` | No | Return all recipes |
-| `POST` | `/api/login` | No | Verify Chef password |
-| `POST` | `/api/recipes` | Yes | Add a new recipe |
-| `DELETE` | `/api/recipes/:id` | Yes | Delete a recipe by ID |
-
-
 ---
 
 ## 🛠 Tech Stack
@@ -72,7 +62,3 @@ Then open **[http://localhost:5000](http://localhost:5000)** in your browser.
 |Deployment|Vercel (CI/CD)|
 
 ---
-
-## 📜 License
-
-MIT — free to use and modify.
